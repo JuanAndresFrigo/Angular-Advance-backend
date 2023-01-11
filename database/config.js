@@ -1,22 +1,16 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const dbConnection = async()=>{
-    
-    try {
-        
-        await mongoose.connect(process.env.DB_CNN
-        // ,{useCreateIndex: true}
-        );
+const dbConnection = async () => {
+  try {
+    await mongoose.connect(process.env.DB_CNN);
 
-        console.log('DB online'); 
-    } catch (error) {
-        console.log(error);
-        throw new Error('Error a la hora de iniciar la DB. Ver logs')
-    }
+    console.log("DB online");
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error a la hora de iniciar la DB. Ver logs");
+  }
+};
 
-}
-
-
-module.exports= {
-    dbConnection
-} 
+module.exports = {
+  dbConnection,
+};
