@@ -4,12 +4,20 @@ const Usuario = require("../models/usuario");
 const { generarJWT } = require("../helpers/jwt");
 
 const getUsuarios = async (req, res) => {
-  const usuario = await Usuario.find({}, "nombre email role google");
+  // Parametro de la request
+  const desde = Number(req.query.desde || 0);
+
+  // Ejecuto ambas promesas al mismo tiempo
+  const [usuarios, total] = await Promise.all([
+    Usuario.find({}, "nombre email role google img").skip(desde).limit(5),
+
+    Usuario.countDocuments(),
+  ]);
 
   res.json({
     ok: true,
-    usuario,
-    uid: req.uid,
+    usuarios,
+    total,
   });
 };
 
