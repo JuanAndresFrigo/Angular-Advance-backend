@@ -1,4 +1,5 @@
 const { response } = require("express");
+const medico = require("../models/medico");
 const Medico = require("../models/medico");
 
 const getMedico = async (req, res = response) => {
@@ -37,16 +38,68 @@ const crearMedico = async (req, res = response) => {
 };
 
 const actualizarMedico = async (req, res = response) => {
-  res.json({
-    ok: true,
-    msg: "actualizarMedico",
-  });
+  // id del medico
+  const id = req.params.id;
+  // id del usuario
+  const uid = req.uid; //Tengo acceso porque ya paso por la autenticacion de jwt
+
+  try {
+    const medicoDB = await Medico.findById(id);
+
+    if (!medicoDB) {
+      res.status(404).json({
+        ok: false,
+        msg: "Medico no encontrado por id",
+      });
+    }
+
+    const cambiosMedico = { ...req.body, usuario: uid };
+
+    const medicoActualizado = await Medico.findByIdAndUpdate(
+      id,
+      cambiosMedico,
+      { new: true }
+    );
+
+    res.json({
+      ok: true,
+      medicoActualizado,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Hable con el administrador",
+    });
+  }
 };
 const borrarMedico = async (req, res = response) => {
-  res.json({
-    ok: true,
-    msg: "borrarMedico",
-  });
+  // id del medico
+  const id = req.params.id;
+
+  try {
+    const medicoDB = await Medico.findById(id);
+
+    if (!medicoDB) {
+      res.status(404).json({
+        ok: false,
+        msg: "Medico no encontrado por id",
+      });
+    }
+
+    await Medico.findByIdAndDelete(id);
+
+    res.json({
+      ok: true,
+      msg: "Médico eliminado",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Hable con el administrador",
+    });
+  }
 };
 
 module.exports = {

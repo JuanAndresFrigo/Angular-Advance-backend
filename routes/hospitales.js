@@ -26,7 +26,7 @@ router.post(
   crearHospital
 );
 
-router.put("/:id", [], actualizarHospital);
+router.put("/:id", validarJWT, actualizarHospital);
 
 router.delete("/:id", borrarHospital);
 
